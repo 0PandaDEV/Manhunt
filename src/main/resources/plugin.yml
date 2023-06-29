@@ -1,0 +1,4 @@
+name: Manhunt
+version: '${project.version}'
+main: tk.pandadev.manhunt.Main
+api-version: '1.19'

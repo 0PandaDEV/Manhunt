@@ -1,0 +1,4 @@
+time:
+mode: "target_death"
+ready: false
+running: false

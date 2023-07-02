@@ -16,7 +16,19 @@ public class RoleTags {
         Bukkit.getOnlinePlayers().forEach(RoleTags::setPlayerTeams);
     }
 
-    public static void setPlayerTeams(Player player){
+    public static void setPlayerTeams(Player player) {
+        if (!Main.getInstance().getConfig().getBoolean("ready")) {
+            for (Team team : player.getScoreboard().getTeams()) {
+                for (String entry : team.getEntries()) {
+                    team.removeEntry(entry);
+                }
+            }
+            for (Player player1 : Bukkit.getOnlinePlayers()) {
+                player1.setPlayerListName(player1.getName());
+            }
+            return;
+        }
+
         Scoreboard scoreboard = player.getScoreboard();
 
         Team hunter = scoreboard.getTeam("010manhunt_hunter");
@@ -25,19 +37,14 @@ public class RoleTags {
         if (hunter == null) hunter = scoreboard.registerNewTeam("010manhunt_hunter");
         if (target == null) target = scoreboard.registerNewTeam("010manhunt_target");
 
-        if (Main.getInstance().getConfig().getBoolean("ready")){
-            hunter.setSuffix(" §a[HUNTER]");
-            target.setSuffix(" §c[TARGET]");
-        } else {
-            hunter.setSuffix("");
-            target.setSuffix("");
-        }
 
+        hunter.setSuffix(" §a[HUNTER]");
+        target.setSuffix(" §c[TARGET]");
 
         Player target_player = Bukkit.getPlayer(UUID.fromString(Main.getInstance().getConfig().getString("target")));
         List<String> hunters = new ArrayList<>();
 
-        for (Player player1 : Bukkit.getOnlinePlayers()){
+        for (Player player1 : Bukkit.getOnlinePlayers()) {
             hunters.add(player1.getName());
         }
 
@@ -46,8 +53,10 @@ public class RoleTags {
         for (String hunter1 : hunters) {
             Player finalHunter = Bukkit.getPlayer(hunter1);
             hunter.addEntry(finalHunter.getName());
+            finalHunter.setPlayerListName(finalHunter.getName() + " §a[HUNTER]");
         }
 
         target.addEntry(target_player.getName());
+        target_player.setPlayerListName(target_player.getName() + " §c[TARGET]");
     }
 }

@@ -30,7 +30,7 @@ public class TimerAPI {
                     Main.getInstance().saveConfig();
                     for (Player onlineplayer : Bukkit.getOnlinePlayers()) {
                         onlineplayer.sendTitle("§cTarget won", "§7Time ran out", 10, 200, 20);
-                        onlineplayer.playSound(onlineplayer.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 1);
+                        onlineplayer.playSound(onlineplayer.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 0.5f);
                         onlineplayer.setGameMode(GameMode.SPECTATOR);
                         RoleTags.setAllPlayerTeams();
                     }

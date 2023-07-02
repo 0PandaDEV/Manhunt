@@ -1,6 +1,7 @@
 package tk.pandadev.manhunt.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,6 +32,7 @@ public class ReadyCommand implements CommandExecutor {
                 Main.getInstance().getConfig().set("ready", true);
                 Main.getInstance().saveConfig();
                 RoleTags.setAllPlayerTeams();
+                Bukkit.getOnlinePlayers().forEach(player1 -> {player1.playSound(player1.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 100, 1);});
             } else {
                 player.sendMessage(Main.getPrefix() + "§cThis command can only be run by the hunted player");
             }

@@ -24,7 +24,8 @@ public class ManhuntGui {
     public static FileConfiguration config = Main.getInstance().getConfig();
 
     public static String owner;
-    public static void mainGui(Player player){
+
+    public static void mainGui(Player player) {
 
         if (config.get("target") == null) owner = "asdasdsa278596786dsdl121fgjs9f34qpfq902fj";
         else owner = Bukkit.getPlayer(UUID.fromString(config.getString("target"))).getName();
@@ -115,28 +116,30 @@ public class ManhuntGui {
         /////////////////////////////
 
         String player_string = "";
-        if (config.getString("target") == null){
+        if (config.getString("target") == null) {
             player_string = "not set";
         } else {
             player_string = Bukkit.getPlayer(UUID.fromString(config.getString("target"))).getName();
         }
 
-        if (config.get("mode").equals("time_based")){
+        if (config.get("mode").equals("time_based")) {
             gui.setItem(3, 8, dev.triumphteam.gui.builder.item.ItemBuilder.from(Utils.createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDMxMmNhNDYzMmRlZjVmZmFmMmViMGQ5ZDdjYzdiNTVhNTBjNGUzOTIwZDkwMzcyYWFiMTQwNzgxZjVkZmJjNCJ9fX0="))
-                        .name(Component.text("§aDone"))
-                        .addLore("")
-                        .addLore("§8Mode: " + config.getString("mode").replace("_", " "))
-                        .addLore("§8Time: " + time)
-                        .addLore("§8Target: " + player_string)
+                    .name(Component.text("§aDone"))
+                    .addLore("")
+                    .addLore("§8Mode: " + config.getString("mode").replace("_", " "))
+                    .addLore("§8Time: " + time)
+                    .addLore("§8Target: " + player_string)
                     .asGuiItem(event -> {
-                        if (config.getInt("time") == 0) {
-                            player.sendMessage(Main.getPrefix() + "§cTime cannot be 00:00:00");
-                            return;
+                        if (config.get("mode").equals("time_based")) {
+                            if (config.getInt("time") == 0) {
+                                player.sendMessage(Main.getPrefix() + "§cTime cannot be 00:00:00");
+                                return;
+                            }
                         }
                         config.set("ready", true);
                         Main.getInstance().saveConfig();
                         gui.close(player);
-            }));
+                    }));
         } else {
             gui.setItem(3, 8, dev.triumphteam.gui.builder.item.ItemBuilder.from(Utils.createSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDMxMmNhNDYzMmRlZjVmZmFmMmViMGQ5ZDdjYzdiNTVhNTBjNGUzOTIwZDkwMzcyYWFiMTQwNzgxZjVkZmJjNCJ9fX0="))
                     .name(Component.text("§aDone"))
@@ -144,9 +147,11 @@ public class ManhuntGui {
                     .addLore("§8Mode: " + config.getString("mode").replace("_", " "))
                     .addLore("§8Target: " + player_string)
                     .asGuiItem(event -> {
-                        if (config.getInt("time") == 0) {
-                            player.sendMessage(Main.getPrefix() + "§cTime cannot be 00:00:00");
-                            return;
+                        if (config.get("mode").equals("time_based")) {
+                            if (config.getInt("time") == 0) {
+                                player.sendMessage(Main.getPrefix() + "§cTime cannot be 00:00:00");
+                                return;
+                            }
                         }
                         config.set("ready", true);
                         Main.getInstance().saveConfig();
@@ -157,7 +162,7 @@ public class ManhuntGui {
         gui.open(player);
     }
 
-    public static void timeChoose(Player player){
+    public static void timeChoose(Player player) {
         Gui gui = Gui.gui()
                 .title(Component.text("Choose Time"))
                 .rows(3)
@@ -247,7 +252,7 @@ public class ManhuntGui {
         gui.open(player);
     }
 
-    public static void choosePlayer(Player player){
+    public static void choosePlayer(Player player) {
         Gui gui = Gui.gui()
                 .disableAllInteractions()
                 .rows(5)

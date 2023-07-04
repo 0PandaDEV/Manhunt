@@ -1,5 +1,7 @@
 package tk.pandadev.manhunt.utils;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -59,9 +61,7 @@ public class ManhuntAPI {
 
         target.sendTitle("§cTarget", "§7Run away", 0, 100, 20);
 
-        if (Main.getInstance().getConfig().get("mode").equals("time_based")) {
-            TimerAPI.startTimer();
-        }
+        ActionBarAPI.actionBar();
 
         run(target);
 
@@ -103,11 +103,11 @@ public class ManhuntAPI {
 
     }
 
-    public static List<Player> getHunters(){
+    public static List<Player> getHunters() {
         Player target = Bukkit.getPlayer(UUID.fromString(Main.getInstance().getConfig().getString("target")));
         List<String> hunters = new ArrayList<>();
 
-        for (Player player : Bukkit.getOnlinePlayers()){
+        for (Player player : Bukkit.getOnlinePlayers()) {
             hunters.add(player.getName());
         }
 
@@ -127,9 +127,11 @@ public class ManhuntAPI {
         new BukkitRunnable() {
             @Override
             public void run() {
-                World worldspawn = target.getLocation().getWorld();
-                worldspawn.setSpawnLocation(target.getLocation());
+                for (Player hunter : getHunters()) {
+                    hunter.setCompassTarget(target.getLocation());
+                }
             }
         }.runTaskTimer(Main.getInstance(), 1, 1);
     }
+
 }

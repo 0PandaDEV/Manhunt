@@ -25,10 +25,17 @@ public class ManhuntListener implements Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
             Player damagedPlayer = (Player) event.getEntity();
-
-            if (damagedPlayer.equals(Bukkit.getPlayer(UUID.fromString(Main.getInstance().getConfig().getString("target"))))) {
-                if (Main.getInstance().getConfig().getBoolean("ready")) {
-                    ManhuntAPI.startManhunt();
+            if (ManhuntAPI.getHunters().contains(event.getDamager())) {
+                if (damagedPlayer.equals(Bukkit.getPlayer(UUID.fromString(Main.getInstance().getConfig().getString("target"))))) {
+                    if (Main.getInstance().getConfig().getBoolean("ready")) {
+                        ManhuntAPI.startManhunt();
+                    }
+                }
+            } else if (event.getDamager().equals(ManhuntAPI.getTarget())){
+                if (ManhuntAPI.getHunters().contains(damagedPlayer)){
+                    if (Main.getInstance().getConfig().getBoolean("ready")) {
+                        ManhuntAPI.startManhunt();
+                    }
                 }
             }
         }
@@ -36,9 +43,9 @@ public class ManhuntListener implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
-        Player damagedPlayer = event.getEntity();
+        Player player = event.getEntity();
 
-        if (damagedPlayer.equals(Bukkit.getPlayer(UUID.fromString(Main.getInstance().getConfig().getString("target"))))) {
+        if (player.equals(Bukkit.getPlayer(UUID.fromString(Main.getInstance().getConfig().getString("target"))))) {
             if (Main.getInstance().getConfig().getBoolean("running")) {
                 Main.getInstance().getConfig().set("running", false);
                 Main.getInstance().saveConfig();
@@ -46,13 +53,16 @@ public class ManhuntListener implements Listener {
                 ActionBarAPI.stopActionbar();
             }
         }
+
+        event.getDrops().removeIf(itemStack -> {
+            return itemStack.getItemMeta().getLocalizedName().equals("010manhunt_tracker");
+        });
     }
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         if (Main.getInstance().getConfig().getBoolean("running")) {
             if (!event.getPlayer().equals(Bukkit.getPlayer(UUID.fromString(Main.getInstance().getConfig().getString("target"))))) {
-                System.out.println("respawn");
                 ItemStack tracker = new ItemStack(Material.COMPASS);
                 ItemMeta trackerMeta = tracker.getItemMeta();
                 trackerMeta.setDisplayName("§fTracker");

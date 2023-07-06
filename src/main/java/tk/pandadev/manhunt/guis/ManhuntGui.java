@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import tk.pandadev.manhunt.Main;
+import tk.pandadev.manhunt.utils.ManhuntAPI;
 import tk.pandadev.manhunt.utils.Utils;
 
 import java.time.LocalTime;
@@ -23,12 +24,7 @@ public class ManhuntGui {
 
     public static FileConfiguration config = Main.getInstance().getConfig();
 
-    public static String owner;
-
     public static void mainGui(Player player) {
-
-        if (config.get("target") == null) owner = "asdasdsa278596786dsdl121fgjs9f34qpfq902fj";
-        else owner = Bukkit.getPlayer(UUID.fromString(config.getString("target"))).getName();
 
         Gui gui = Gui.gui()
                 .title(Component.text("Manhunt"))
@@ -98,7 +94,7 @@ public class ManhuntGui {
 
         //////////////////////////////
 
-        ItemStack chose_player = new ItemBuilder(Material.PLAYER_HEAD).setName("§fSelect player").setSkullOwner(owner).build();
+        ItemStack chose_player = new ItemBuilder(Material.PLAYER_HEAD).setName("§fSelect player").setSkullOwner(ManhuntAPI.getTarget() != null ? ManhuntAPI.getTarget().getName() : "09384weng0389w4nwper9v8q3204nr").build();
 
         gui.setItem(3, 5, dev.triumphteam.gui.builder.item.ItemBuilder.from(chose_player).asGuiItem(event -> {
             choosePlayer(player);
@@ -116,7 +112,7 @@ public class ManhuntGui {
         /////////////////////////////
 
         String player_string = "";
-        if (config.getString("target") == null) {
+        if (ManhuntAPI.getTarget() == null) {
             player_string = "not set";
         } else {
             player_string = Bukkit.getPlayer(UUID.fromString(config.getString("target"))).getName();

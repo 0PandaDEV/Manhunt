@@ -3,6 +3,7 @@ package tk.pandadev.manhunt.utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,6 +19,10 @@ import java.util.List;
 import java.util.UUID;
 
 public class ManhuntAPI {
+
+    public static FileConfiguration config = Main.getInstance().getConfig();
+
+    private static String owner;
 
     public static void readyManhunt() {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -52,6 +57,8 @@ public class ManhuntAPI {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 1);
             player.getInventory().clear();
+            player.setHealth(player.getMaxHealth());
+            player.setFoodLevel(20);
         }
 
         for (Player hunter : getHunters()) {
@@ -104,15 +111,17 @@ public class ManhuntAPI {
     }
 
     public static List<Player> getHunters() {
-        Player target = Bukkit.getPlayer(UUID.fromString(Main.getInstance().getConfig().getString("target")));
         List<String> hunters = new ArrayList<>();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             hunters.add(player.getName());
         }
-
         List<Player> final_hunters = new ArrayList<>();
-        hunters.remove(target.getName());
+
+        if (getTarget() != null){
+            Player target = getTarget();
+            hunters.remove(target.getName());
+        }
 
         for (String hunter : hunters) {
             Player finalHunter = Bukkit.getPlayer(hunter);
@@ -122,6 +131,11 @@ public class ManhuntAPI {
         return final_hunters;
     }
 
+
+    public static Player getTarget(){
+        if (config.get("target") == null) return null;
+        return Bukkit.getPlayer(UUID.fromString(config.getString("target")));
+    }
 
     private static void run(Player target) {
         new BukkitRunnable() {
